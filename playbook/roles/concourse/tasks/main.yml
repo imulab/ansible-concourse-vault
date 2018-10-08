@@ -74,7 +74,7 @@
       - concourse-worker.service
 
   - name: "allow ufw concourse web ui traffic"
-    command: "ufw allow 8080"
+    command: "ufw allow {{concourse.http_port}}"
 
   - name: "allow ufw concourse worker forwarding traffic"
     command: "ufw default allow routed"

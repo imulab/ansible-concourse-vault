@@ -1,0 +1,24 @@
+#!/bin/bash
+set -e
+
+# determine OS
+os_dist=$(cat /etc/os-release | grep "^NAME=" | sed -e 's/^NAME="//' -e 's/"$//')
+os_release=$(cat /etc/os-release | grep "^VERSION_ID=" | sed -e 's/^VERSION_ID="//' -e 's/"$//')
+if [[ "${os_dist:-}" != "Ubuntu" ]] || [[ "${os_release:-}" != "18.04" ]]; then
+        echo "Warning: This playbook is only supported on Ubuntu 18.04. Your mileage may vary."
+else
+        echo "OS checked!"
+fi
+
+# install dependencies
+apt-get update
+apt-get install -y software-properties-common
+apt-add-repository -y ppa:ansible/ansible
+apt-get update
+apt-get install -y ansible
+apt-get install -y git
+
+# run playbook
+pushd playbook
+	ansible-playbook playbook.yml
+popd

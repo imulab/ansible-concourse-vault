@@ -7,7 +7,7 @@ CONCOURSE_ADD_LOCAL_USER={{concourse_username}}:{{concourse_password}}
 CONCOURSE_MAIN_TEAM_LOCAL_USER={{concourse_username}}
 CONCOURSE_BASIC_AUTH_USERNAME={{concourse_username}}
 CONCOURSE_BASIC_AUTH_PASSWORD={{concourse_password}}
-CONCOURSE_EXTERNAL_URL=http://{{external_ip}}:8080
+CONCOURSE_EXTERNAL_URL=http://{{external_ip}}:{{concourse.http_port}}
 
 CONCOURSE_VAULT_URL=http://{{shared.vault_address}}
 CONCOURSE_VAULT_PATH_PREFIX=/concourse

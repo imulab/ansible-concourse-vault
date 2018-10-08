@@ -4,6 +4,7 @@ concourse:
   install_path: /usr/local/bin/concourse
   config_base: /etc/concourse
   worker_dns: 8.8.8.8
+  http_port: 8080
 
 fly:
   version: 4.2.1
