@@ -6,3 +6,9 @@
 
   - name: "install jq"
     command: snap install jq
+
+  - name: "create shared secrets directory"
+    file:
+      path: "{{shared.secret_repo}}"
+      state: directory
+      mode: u=rw,g=r,o=r

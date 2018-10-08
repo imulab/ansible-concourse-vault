@@ -4,7 +4,7 @@ Description=Vault process
 [Service]
 User=root
 Restart=on-failure
-ExecStart=/usr/local/bin/vault server -config={{vault.configBase}}/config.hcl
+ExecStart=/usr/local/bin/vault server -config={{vault.config_base}}/config.hcl
 
 [Install]
 WantedBy=multi-user.target

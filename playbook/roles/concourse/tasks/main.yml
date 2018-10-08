@@ -30,11 +30,8 @@
       mode: u=rw,g=r,o=r
 
   - name: "read concourse vault key into variable"
-    command: "cat {{vault.config_base}}/concourse-token"
+    command: "cat {{shared.secret_repo}}/concourse-token"
     register: vault_concourse_token
-
-  - debug:
-      msg: "token is {{vault_concourse_token}}"
 
   - name: "remove existing key files"
     file:

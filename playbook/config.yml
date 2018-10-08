@@ -1,0 +1,5 @@
+vault:
+  config_base: /etc/vault
+  address: 127.0.0.1:8200
+concourse:
+  worker_dns: 8.8.8.8

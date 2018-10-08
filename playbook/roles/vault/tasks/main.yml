@@ -18,20 +18,20 @@
 
   - name: "make vault config directory"
     file:
-      path: "{{vault.configBase}}"
+      path: "{{vault.config_base}}"
       state: directory
       mode: u=rw,g=r,o=r
 
   - name: "render vault config"
     template:
       src: config.hcl.j2
-      dest: "{{vault.configBase}}/config.hcl"
+      dest: "{{vault.config_base}}/config.hcl"
       mode: u=rw,g=r,o=r
 
   - name: "render concourse policy"
     template:
       src: concourse-policy.hcl.j2
-      dest: "{{vault.configBase}}/concourse-policy.hcl"
+      dest: "{{vault.config_base}}/concourse-policy.hcl"
       mode: u=rw,g=r,o=r
 
   - name: "render vault service unit"
@@ -43,12 +43,12 @@
   - name: "render vault address variable"
     lineinfile:
       path: /etc/environment
-      line: "export VAULT_ADDR='http://{{vault.address}}'"
+      line: "export VAULT_ADDR='http://{{shared.vault_address}}'"
 
   - name: "render post install script"
     template:
-      src: post-install.sh
-      dest: "{{vault.configBase}}/post-install.sh"
+      src: post-install.sh.j2
+      dest: "{{vault.config_base}}/post-install.sh"
       mode: u=rwx,g=r,o=r
 
   - name: "start vault service"
@@ -58,4 +58,4 @@
       enabled: true
 
   - name: "execute post install"
-    command: "{{vault.configBase}}/post-install.sh"
+    command: "{{vault.config_base}}/post-install.sh"

@@ -4,22 +4,22 @@ set -eu
 
 # init operator
 vault operator init -format=json -key-shares=1 -key-threshold=1 > \
-	/etc/vault/secrets.json
+	{{shared.secret_repo}}/secrets.json
 
 # check source
-if [ ! -e /etc/vault/secrets.json ]; then
-	echo "file /etc/vault/secrets.json is not readable."
+if [ ! -e {{shared.secret_repo}}/secrets.json ]; then
+	echo "file {{shared.secret_repo}}/secrets.json does not exist."
 	exit 1
 fi
 
 # unseal vault
-cat /etc/vault/secrets.json | \
+cat {{shared.secret_repo}}/secrets.json | \
 	/snap/bin/jq '.unseal_keys_b64|.[0]' | \
 	sed -e 's/^"//' -e 's/"$//' | \
 	xargs vault operator unseal
 
 # login vault
-cat /etc/vault/secrets.json | \
+cat {{shared.secret_repo}}/secrets.json | \
 	/snap/bin/jq '.root_token' | \
 	sed -e 's/^"//' -e 's/"$//' | \
 	xargs vault login
@@ -28,12 +28,12 @@ cat /etc/vault/secrets.json | \
 vault mount -path=/concourse -description="Secrets for concourse pipelines" generic
 
 # create policy
-vault policy write policy-concourse /etc/vault/concourse-policy.hcl
+vault policy write policy-concourse {{vault.config_base}}/concourse-policy.hcl
 
 # create token for concourse
 vault token-create --policy=policy-concourse -period="600h" -format=json | \
 	/snap/bin/jq '.auth | .client_token' | \
 	sed -e 's/^"//' -e 's/"$//' | \
-	tee /etc/vault/concourse-token
+	tee {{shared.secret_repo}}/concourse-token
 
 

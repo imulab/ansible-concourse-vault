@@ -3,13 +3,13 @@ CONCOURSE_TSA_HOST_KEY={{concourse.config_base}}/tsa_host_key
 CONCOURSE_TSA_AUTHORIZED_KEYS={{concourse.config_base}}/authorized_worker_keys
 CONCOURSE_POSTGRES_SOCKET=/var/run/postgresql
 
-CONCOURSE_ADD_LOCAL_USER={{concourse.username}}:{{concourse.password}}
-CONCOURSE_MAIN_TEAM_LOCAL_USER={{concourse.username}}
-CONCOURSE_BASIC_AUTH_USERNAME={{concourse.username}}
-CONCOURSE_BASIC_AUTH_PASSWORD={{concourse.password}}
+CONCOURSE_ADD_LOCAL_USER={{concourse_username}}:{{concourse_password}}
+CONCOURSE_MAIN_TEAM_LOCAL_USER={{concourse_username}}
+CONCOURSE_BASIC_AUTH_USERNAME={{concourse_username}}
+CONCOURSE_BASIC_AUTH_PASSWORD={{concourse_password}}
 CONCOURSE_EXTERNAL_URL=http://{{external_ip}}:8080
 
-CONCOURSE_VAULT_URL=http://{{vault.address}}
+CONCOURSE_VAULT_URL=http://{{shared.vault_address}}
 CONCOURSE_VAULT_PATH_PREFIX=/concourse
 CONCOURSE_VAULT_INSECURE_SKIP_VERIFY=true
 CONCOURSE_VAULT_CLIENT_TOKEN={{vault_concourse_token.stdout}}

@@ -3,6 +3,6 @@ storage "file" {
 }
 
 listener "tcp" {
- address     = "{{vault.address}}"
+ address     = "{{shared.vault_address}}"
  tls_disable = 1
 }

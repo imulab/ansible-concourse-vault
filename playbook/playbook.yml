@@ -1,5 +1,5 @@
 ---
-  - hosts: localhost
+  - hosts: all
     become: true
     gather_facts: true
     roles:
@@ -11,11 +11,13 @@
       - name: "external_ip"
         prompt: "External IP address of your machine"
         private: false
+      - name: "concourse_username"
+        prompt: "Concourse username"
+        private: false
+      - name: "concourse_password"
+        prompt: "Concourse password"
     vars:
-      vault:
-        config_base: /etc/vault
-        address: 127.0.0.1:8200
-      concourse:
-        username: imulab
-        password: 19890117
-        worker_dns: 8.8.8.8
+      shared:
+        secret_repo: /opt/deployment-secrets
+        vault_address: 127.0.0.1:8200
+      

@@ -3,6 +3,7 @@ concourse:
   version: 4.2.1
   install_path: /usr/local/bin/concourse
   config_base: /etc/concourse
+  worker_dns: 8.8.8.8
 
 fly:
   version: 4.2.1
