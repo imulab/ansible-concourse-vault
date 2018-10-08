@@ -1,0 +1,27 @@
+---
+  - name: "install postgresql dependencies"
+    apt:
+      name:
+        - postgresql
+        - postgresql-contrib
+      state: present
+
+  - name: "check if postgresql user exists"
+    command: psql postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='concourse'"
+    register: userExists
+    become_user: postgres
+
+  - name: "check if postgresql database exists"
+    command: psql postgres -tAc "SELECT 1 from pg_database WHERE datname='atc'"
+    register: databaseExists
+    become_user: postgres
+
+  - name: "create postgresql user: concourse"
+    command: "createuser concourse"
+    become_user: postgres
+    when: userExists.stdout != "1"
+
+  - name: "create postgresql database: atc"
+    command: "createdb --owner=concourse atc"
+    become_user: postgres
+    when: databaseExists.stdout != "1"

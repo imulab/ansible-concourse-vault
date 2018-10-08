@@ -1,0 +1,61 @@
+---
+  - name: "delete old vault download if exists"
+    file:
+      path: /tmp/vault_{{vault.version}}_linux_amd64.zip
+      state: absent
+
+  - name: "download vault"
+    get_url:
+      url: https://releases.hashicorp.com/vault/{{vault.version}}/vault_{{vault.version}}_linux_amd64.zip
+      dest: /tmp/vault_{{vault.version}}_linux_amd64.zip
+      mode: u=rw,g=r,o=r
+
+  - name: "unzip vault"
+    unarchive:
+      src: /tmp/vault_{{vault.version}}_linux_amd64.zip
+      dest: /usr/local/bin
+      mode: u+x
+
+  - name: "make vault config directory"
+    file:
+      path: "{{vault.configBase}}"
+      state: directory
+      mode: u=rw,g=r,o=r
+
+  - name: "render vault config"
+    template:
+      src: config.hcl.j2
+      dest: "{{vault.configBase}}/config.hcl"
+      mode: u=rw,g=r,o=r
+
+  - name: "render concourse policy"
+    template:
+      src: concourse-policy.hcl.j2
+      dest: "{{vault.configBase}}/concourse-policy.hcl"
+      mode: u=rw,g=r,o=r
+
+  - name: "render vault service unit"
+    template:
+      src: vault.service.j2
+      dest: /etc/systemd/system/vault.service
+      mode: u=rw,g=r,o=r
+
+  - name: "render vault address variable"
+    lineinfile:
+      path: /etc/environment
+      line: "export VAULT_ADDR='http://{{vault.address}}'"
+
+  - name: "render post install script"
+    template:
+      src: post-install.sh
+      dest: "{{vault.configBase}}/post-install.sh"
+      mode: u=rwx,g=r,o=r
+
+  - name: "start vault service"
+    systemd:
+      name: vault.service
+      state: started
+      enabled: true
+
+  - name: "execute post install"
+    command: "{{vault.configBase}}/post-install.sh"

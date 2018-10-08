@@ -1,0 +1,6 @@
+---
+vault:
+  version: 0.11.2
+  configBase: /etc/vault
+  data: /mnt/vault/data
+  address: 127.0.0.1:8200

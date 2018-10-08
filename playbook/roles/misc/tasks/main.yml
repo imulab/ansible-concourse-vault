@@ -1,0 +1,8 @@
+---
+  - name: "install unzip"
+    apt:
+      name: unzip
+      state: present
+
+  - name: "install jq"
+    command: snap install jq
