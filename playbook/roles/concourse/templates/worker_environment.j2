@@ -1,0 +1,6 @@
+CONCOURSE_WORK_DIR=/var/lib/concourse
+CONCOURSE_TSA_WORKER_PRIVATE_KEY={{concourse.config_base}}/worker_key
+CONCOURSE_TSA_PUBLIC_KEY={{concourse.config_base}}/tsa_host_key.pub
+CONCOURSE_TSA_HOST=127.0.0.1:2222
+
+CONCOURSE_GARDEN_DNS_SERVER={{concourse.worker_dns}}

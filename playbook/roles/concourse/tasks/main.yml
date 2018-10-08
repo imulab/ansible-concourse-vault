@@ -1,2 +1,92 @@
 ---
-# tasks file for concourse
+  - name: "check if concourse exists"
+    stat:
+      path: "{{concourse.install_path}}"
+    register: concourseExecutable
+
+  - name: "check if fly exists"
+    stat:
+      path: "{{fly.install_path}}"
+    register: flyExecutable
+
+  - name: "download concourse library"
+    get_url:
+      url: "https://github.com/concourse/concourse/releases/download/v{{concourse.version}}/concourse_linux_amd64"
+      dest: "{{concourse.install_path}}"
+      mode: u=rwx,g=rx,o=rx
+    when: concourseExecutable.stat.exists == False
+
+  - name: "download fly library"
+    get_url:
+      url: "https://github.com/concourse/concourse/releases/download/v{{fly.version}}/fly_linux_amd64"
+      dest: "{{fly.install_path}}"
+      mode: u=rwx,g=rx,o=rx
+    when: flyExecutable.stat.exists == False
+
+  - name: "make concourse config directory"
+    file:
+      path: "{{concourse.config_base}}"
+      state: directory
+      mode: u=rw,g=r,o=r
+
+  - name: "read concourse vault key into variable"
+    command: "cat {{vault.config_base}}/concourse-token"
+    register: vault_concourse_token
+
+  - debug:
+      msg: "token is {{vault_concourse_token}}"
+
+  - name: "remove existing key files"
+    file:
+      path: "{{concourse.config_base}}/{{item}}"
+      state: absent
+    with_items:
+      - tsa_host_key
+      - worker_key
+      - session_signing_key
+
+  - name: "create new key files"
+    command: "ssh-keygen -t rsa -q -N '' -f {{concourse.config_base}}/{{item}}"
+    with_items:
+      - tsa_host_key
+      - worker_key
+      - session_signing_key
+
+  - name: "copy concourse worker key"
+    command: "cp {{concourse.config_base}}/worker_key.pub {{concourse.config_base}}/authorized_worker_keys"
+
+  - name: "render web environment configuration"
+    template:
+      src: web_environment.j2
+      dest: "{{concourse.config_base}}/web_environment"
+      mode: u=rw
+
+  - name: "render worker environment configuration"
+    template:
+      src: worker_environment.j2
+      dest: "{{concourse.config_base}}/worker_environment"
+      mode: u=rw
+
+  - name: "render unit files"
+    template:
+      src: "{{item}}.j2"
+      dest: "/etc/systemd/system/{{item}}"
+      mode: u=rw,g=r,o=r
+    with_items:
+      - concourse-web.service
+      - concourse-worker.service
+
+  - name: "allow ufw concourse web ui traffic"
+    command: "ufw allow 8080"
+
+  - name: "allow ufw concourse worker forwarding traffic"
+    command: "ufw default allow routed"
+
+  - name: "start concourse service"
+    systemd:
+      name: "{{item}}"
+      state: started
+      enabled: true
+    with_items:
+      - concourse-web.service
+      - concourse-worker.service

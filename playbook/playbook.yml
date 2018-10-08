@@ -6,3 +6,16 @@
       - role: misc
       - role: postgres
       - role: vault
+      - role: concourse
+    vars_prompt:
+      - name: "external_ip"
+        prompt: "External IP address of your machine"
+        private: false
+    vars:
+      vault:
+        config_base: /etc/vault
+        address: 127.0.0.1:8200
+      concourse:
+        username: imulab
+        password: 19890117
+        worker_dns: 8.8.8.8

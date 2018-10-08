@@ -1,0 +1,3 @@
+---
+vault:
+  config_base: /etc/vault

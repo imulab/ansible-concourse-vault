@@ -1,0 +1,12 @@
+[Unit]
+Description=Concourse CI worker process
+After=concourse-web.service
+
+[Service]
+User=root
+Restart=on-failure
+EnvironmentFile={{concourse.config_base}}/worker_environment
+ExecStart={{concourse.install_path}} worker
+
+[Install]
+WantedBy=multi-user.target

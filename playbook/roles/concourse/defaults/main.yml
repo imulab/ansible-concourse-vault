@@ -1,2 +1,9 @@
 ---
-# defaults file for concourse
+concourse:
+  version: 4.2.1
+  install_path: /usr/local/bin/concourse
+  config_base: /etc/concourse
+
+fly:
+  version: 4.2.1
+  install_path: /usr/local/bin/fly
