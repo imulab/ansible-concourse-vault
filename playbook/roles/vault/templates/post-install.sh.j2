@@ -2,6 +2,9 @@
 
 set -eu
 
+# source environment
+source /etc/environment
+
 # init operator
 vault operator init -format=json -key-shares=1 -key-threshold=1 > \
 	{{shared.secret_repo}}/secrets.json
